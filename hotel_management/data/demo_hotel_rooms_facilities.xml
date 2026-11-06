@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo noupdate="1">
+    <record id="demo_facility_1" model="hotel.rooms.facilities">
+        <field name="name">AC</field>
+    </record>
+    <record id="demo_facility_2" model="hotel.rooms.facilities">
+        <field name="name">TV</field>
+    </record>
+    <record id="demo_facility_3" model="hotel.rooms.facilities">
+        <field name="name">Bath Tub</field>
+    </record>
+    <record id="demo_facility_4" model="hotel.rooms.facilities">
+        <field name="name">Phone</field>
+    </record>
+    <record id="demo_facility_5" model="hotel.rooms.facilities">
+        <field name="name">Towels</field>
+    </record>
+</odoo>

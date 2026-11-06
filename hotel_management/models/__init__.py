@@ -1,0 +1,1 @@
+from . import hotel_rooms,hotel_facilities,hotel_rooms_facilities,hotel_foods,hotel_foods_category,hotel_accommodation,hotel_guests

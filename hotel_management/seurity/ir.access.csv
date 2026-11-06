@@ -1,0 +1,8 @@
+id,name,model_id,group_id/id,operation,domain
+access_hotel_rooms_model,access_hotel_rooms_model,hotel.rooms,base.group_user,crud,
+access_hotel_facilities_model,access_hotel_facilities_model,hotel.facilities,base.group_user,crud,
+access_hotel_rooms_facilities_model,access_hotel_rooms_facilities_model,hotel.rooms.facilities,base.group_user,crud,
+access_hotel_foods_model,access_hotel_foods_model,hotel.foods,base.group_user,crud,
+access_hotel_foods_category_model,access_hotel_foods_category_model,hotel.foods.category,base.group_user,crud,
+access_hotel_accommodation_model,access_hotel_accommodation_model,hotel.accommodation,base.group_user,crud,
+access_hotel_guests_model,access_hotel_guests_model,hotel.guests,base.group_user,crud,

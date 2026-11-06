@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <menuitem id="hotel_menu_root" name="Hotel Management">
+
+        <!--        Reception Menu-->
+        <menuitem id="reception_menu" name="Reception" sequence="1">
+            <menuitem id="hotel_accommodation_model" action="hotel_accommodation_action" name="Accommodation"/>
+        </menuitem>
+
+        <!--        Configuration Menu-->
+        <menuitem id="configuration_menu" name="Configuration">
+            <menuitem id="hotel_rooms_model" action="hotel_rooms_action" name="Rooms"/>
+            <menuitem id="hotel_facilities_model" action="hotel_facilities_action" name="Hotel Facilities"/>
+            <menuitem id="hotel_rooms_facilities_model" action="hotel_rooms_facilities_action" name="Room Facilities"/>
+            <menuitem id="hotel_foods_model" action="hotel_foods_action" name="Food Items"/>
+            <menuitem id="hotel_foods_category_model" action="hotel_foods_category_action" name="Food Category"/>
+        </menuitem>
+
+    </menuitem>
+</odoo>
