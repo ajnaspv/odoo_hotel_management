@@ -1,6 +1,6 @@
 {
     'name': "Hotel management",
-    'depends': ['base','mail'],
+    'depends': ['base','mail','account'],
     'application': True,
     'version': '20.0.1.0.0',
     'author': "Ajnas P V",

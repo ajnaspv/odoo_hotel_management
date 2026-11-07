@@ -1,6 +1,7 @@
 from datetime import timedelta, datetime
 from odoo import fields,models, api, _
 from odoo.exceptions import UserError
+from odoo import Command
 
 
 class HotelAccommodation(models.Model):
@@ -20,7 +21,7 @@ class HotelAccommodation(models.Model):
         ('dormitory', 'Dormitory'),
     ])
     facility_ids = fields.Many2many('hotel.rooms.facilities',string='Facility')
-    room_ids = fields.Many2many('hotel.rooms',string='Rooms' , domain="[('bed_type', '=', bed_type), ('facilities_id', '=', facility_ids), ('state', '=', 'available')]")
+    room_id = fields.Many2many('hotel.rooms',string='Rooms' , domain="[('bed_type', '=', bed_type), ('facilities_id', '=', facility_ids), ('state', '=', 'available')] if bed_type and facility_ids else [('bed_type', '=', bed_type)] if bed_type else [('facilities_id', '=', facility_ids)] if facility_ids else []")
     state = fields.Selection([
         ('draft', 'Draft'),
         ('check_in', 'Check-In'),
@@ -58,3 +59,14 @@ class HotelAccommodation(models.Model):
         self.state = 'check_out'
         self.check_out_date = datetime.now()
 
+        self.env['account.move'].create({
+            'move_type':'out_invoice',
+            'partner_id': self.guest_id.id,
+            'invoice_date': self.check_in_date,
+            'invoice_line_ids': [Command.create({
+                'name': self.room_id.room_number,
+                'price_unit': int(self.room_id.rent),
+                'quantity': 1,
+                'tax_ids': [],
+            })]
+        })

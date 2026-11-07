@@ -20,7 +20,7 @@
                 <field name="check_out_date"/>
                 <field name="bed_type"/>
                 <field name="facility_ids"/>
-                <field name="room_ids"/>
+                <field name="room_id"/>
                 <field name="state"/>
                 <field name="id_proof"/>
             </list>
@@ -47,7 +47,7 @@
                             <field name="guest_id" context="{'show_address':1}"/>
                             <field name="bed_type"/>
                             <field name="facility_ids" options="{'no_create': True}" widget="many2many_tags"/>
-                            <field name="room_ids" options="{'no_create': True}" widget="many2many_tags"/>
+                            <field name="room_id" options="{'no_create': True}" widget="many2many_tags"/>
                             <field name="id_proof"/>
                         </group>
                         <group>
