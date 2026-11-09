@@ -8,21 +8,16 @@
 
     <!--List view-->
 
-    <record id="hotel_accommodation_list_view" model="ir.ui.view" >
+    <record id="hotel_accommodation_list_view" model="ir.ui.view">
         <field name="name">List View</field>
         <field name="model">hotel.accommodation</field>
         <field name="arch" type="xml">
             <list string="Accommodation">
                 <field name="guest_id"/>
-                <field name="number_of_guests"/>
-                <field name="additional_guest_ids"/>
                 <field name="check_in_date"/>
                 <field name="check_out_date"/>
-                <field name="bed_type"/>
-                <field name="facility_ids"/>
-                <field name="room_ids"/>
+                <field name="room_id"/>
                 <field name="state"/>
-                <field name="id_proof"/>
             </list>
         </field>
     </record>
@@ -34,11 +29,23 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button name="check_in_action" type="object" invisible="state != 'draft'" string="Check In"/>
-                    <button name="check_out_action" type="object" invisible="state != 'check_in'" string="Check Out"/>
-                    <field name="state" widget="statusbar" options="{'clickable':True}"/>
+                    <button name="check_in_action" type="object" invisible="state != 'draft'" string="Check In"
+                            class="btn-primary"/>
+                    <button name="check_out_action" type="object" invisible="state != 'check_in'" string="Check Out"
+                            class="btn-primary"/>
+                    <button name="draft_btn_action" type="object" string="Reset to Draft"/>
+                    <button name="cancel_btn_action" type="object" string="Cancel"/>
+                    <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>
+                    <div class="oe_button_box" name="button_box" invisible="state != 'check_out'">
+                    <button name="action_view_invoice" type="object" class="oe_stat_button"
+                            icon="edit_square">
+<!--                        <field string="Invoice" name="invoice_count" widget="statinfo"/>-->
+                        <span>Invoice</span>
+                    </button>
+
+                </div>
                     <h1>
                         <field name="booking_reference" placeholder="Booking reference"/>
                     </h1>
@@ -47,13 +54,13 @@
                             <field name="guest_id" context="{'show_address':1}"/>
                             <field name="bed_type"/>
                             <field name="facility_ids" options="{'no_create': True}" widget="many2many_tags"/>
-                            <field name="room_ids" options="{'no_create': True}" widget="many2many_tags"/>
+                            <field name="room_id" options="{'no_create': True}"/>
                             <field name="id_proof"/>
                         </group>
                         <group>
                             <field name="number_of_guests"/>
                             <!--                            <field name="additional_guest_ids" invisible="number_of_guests &lt;= 1" widget="many2many_tags"/>-->
-                            <field name="check_in_date" readonly="state != 'draft'"/>
+                            <field name="check_in_date" readonly="1"/>
                             <field name="check_out_date"/>
                             <field name="expected_days" invisible="state not in ['draft','check_in']"/>
                             <field name="expected_date" invisible="state not in ['draft','check_in']"/>
@@ -66,7 +73,7 @@
                         </page>
                     </notebook>
                 </sheet>
-        <chatter/>
+                <chatter/>
             </form>
         </field>
     </record>
