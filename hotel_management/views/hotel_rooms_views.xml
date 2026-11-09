@@ -29,14 +29,13 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <field name="state" widget="statusbar" options="{'clickable':'1'}"/>
+                    <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>
                     <group>
                         <group>
                             <field name="room_number"/>
                             <field name="bed_type"/>
-                            <field name="available_beds" invisible="bed_type != 'dormitory'"/>
 
                         </group>
                         <group>
