@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="hotel_food_orders_action" model="ir.actions.act_window">
+        <field name="name">Order Food</field>
+        <field name="res_model">hotel.food.orders</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!--List view-->
+
+    <record id="hotel_foods__orders_list_view" model="ir.ui.view">
+        <field name="name">List View</field>
+        <field name="model">hotel.food.orders</field>
+        <field name="arch" type="xml">
+            <list string="Foods" >
+                <field name="room_id"/>
+                <field name="guest"/>
+                <field name="order_date"/>
+            </list>
+        </field>
+    </record>
+
+    <!--    Form View-->
+    <record id="hotel_foods__orders_form_view" model="ir.ui.view">
+        <field name="name">Form View</field>
+        <field name="model">hotel.food.orders</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="room_id"/>
+                            <field name="guest"/>
+                            <field name="order_date"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

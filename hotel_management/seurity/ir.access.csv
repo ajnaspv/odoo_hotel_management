@@ -6,3 +6,4 @@ access_hotel_foods_model,access_hotel_foods_model,hotel.foods,base.group_user,cr
 access_hotel_foods_category_model,access_hotel_foods_category_model,hotel.foods.category,base.group_user,crud,
 access_hotel_accommodation_model,access_hotel_accommodation_model,hotel.accommodation,base.group_user,crud,
 access_hotel_guests_model,access_hotel_guests_model,hotel.guests,base.group_user,crud,
+access_hotel_food_orders_model,access_hotel_food_orders_model,hotel.food.orders,base.group_user,crud,
