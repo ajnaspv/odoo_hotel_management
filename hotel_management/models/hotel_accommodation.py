@@ -9,7 +9,7 @@ class HotelAccommodation(models.Model):
     _name = 'hotel.accommodation'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _description = 'Hotel Accommodation'
-    _rec_name = 'booking_reference'
+    _rec_name = 'room_id'
 
     guest_id = fields.Many2one('res.partner',string='Guest Name', required=True)
     number_of_guests = fields.Integer(string='Number of Guests', default=1)
