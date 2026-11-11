@@ -40,18 +40,44 @@
                                 <field name="category_ids" widget="many2many_tags"
                                        placeholder="Select food categories"/>
                             </group>
-                            <field name="food_ids" mode="kanban">
+                            <field name="food_ids" mode="kanban" context="{'default_order_id': id}">
                                 <kanban>
-                                        type="object">
                                     <templates>
                                         <t t-name="card" class="row">
                                             <field name="category_id"/>
-                                            <field name="image" widget="image" options="{'size': [120, 120]}"/>
+                                            <field name="image" widget="image" options="{'size': [60, 60]}"/>
                                             <field name="name" class="fw-bolder"/>
                                             <field name="price" class="text-muted"/>
                                         </t>
                                     </templates>
                                 </kanban>
+
+                                <form>
+                                    <sheet>
+                                        <group>
+                                            <field name="image" widget="image" options="{'size': [120, 120]}"/>
+                                            <field name="name" class="fw-bolder"/>
+                                            <field name="price"/>
+                                            <field name="order_qty"/>
+                                        </group>
+                                    </sheet>
+                                    <footer>
+                                        <button name="action_qty_entry" type="object"
+                                                string="Add to List"
+                                                class="btn-primary"/>
+                                    </footer>
+                                </form>
+                            </field>
+                        </page>
+                        <page string="Order Lines">
+                            <field name="order_line_ids">
+                                <list editable="bottom">
+                                    <field name="food_item_id"/>
+                                    <field name="food_category_ids" widget="many2many_tags"/>
+                                    <field name="food_qty"/>
+                                    <field name="price"/>
+                                    <field name="subtotal"/>
+                                </list>
                             </field>
                         </page>
                     </notebook>
