@@ -1,4 +1,4 @@
-from odoo import fields, models,api
+from odoo import fields, models,api, _
 from openpyxl.worksheet import related
 
 
@@ -8,11 +8,15 @@ class HotelFoodOreders(models.Model):
     _rec_name = 'room_id'
 
     room_id = fields.Many2one('hotel.accommodation', readonly=False, domain="[('state', '=', 'check_in')]",required=True)
+    rm_id = fields.Many2one('hotel.rooms', readonly=True, related='room_id.room_id')
     guest_name = fields.Char(string='Guest Name')
     order_date = fields.Datetime(string='Order Date',default=fields.Datetime.now, readonly=True)
     category_ids = fields.Many2many('hotel.foods.category', string='Categories')
     food_ids = fields.Many2many('hotel.foods', string='Foods', domain="[('category_id','in', category_ids)] if category_ids else []")
     order_line_ids = fields.One2many('hotel.food.order.lines','order_id', string='Order Lines')
+    food_order_reference = fields.Char(string='Order Reference', readonly=True, default=lambda self: _('New'), copy=False)
+    status = fields.Selection([('cancelled', 'Cancelled'),
+                               ('confirmed','Confirmed'),],default='confirmed',string='Status')
 
     @api.onchange('room_id')
     def _onchange_room_id(self):
@@ -25,3 +29,35 @@ class HotelFoodOreders(models.Model):
     def _onchange_category_ids(self):
         """ On change category ids select guest name"""
         self.food_ids = self.env['hotel.foods'].search([('category_id', 'in', self.category_ids)])
+
+    @api.model_create_multi
+    def create(self, vals):
+        """Creating sequence number.
+        booking reference number is generating"""
+        for val in vals:
+            if val.get('food_order_reference', _('New')) == _('New'):
+                val['food_order_reference'] = self.env['ir.sequence'].next_by_code('hotel.food.orders')
+            return super(HotelFoodOreders, self).create(vals)
+
+    def food_order_confirm_action(self):
+
+        price = sum(self.order_line_ids.mapped('subtotal'))
+
+        self.env['hotel.payments'].create({
+            'description': self.food_order_reference,
+            'uom': "Units",
+            'quantity': 1,
+            'unit_price': price,
+            'subtotal': price,
+            'accommodation_id': self.room_id.id,
+        })
+        self.status = 'confirmed'
+        print(self.status)
+
+    def food_order_cancel_action(self):
+        self.status = 'cancelled'
+        payments = self.env['hotel.payments'].search([('description', 'in', self.food_order_reference)])
+        payments.unlink()
+
+        food_orders = self.env['hotel.food.order.lines'].search([('food_order_reference', 'in', self.food_order_reference)])
+        food_orders.unlink()

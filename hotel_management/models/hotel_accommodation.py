@@ -34,7 +34,9 @@ class HotelAccommodation(models.Model):
     expected_days = fields.Integer(string='Expected Days')
     expected_date = fields.Datetime(string='Expected Date', compute='_compute_expected_date')
     booking_reference = fields.Char(string='Boooking Reference', readonly=True, default=lambda self: _('New'), copy=False)
-
+    invoice_count = fields.Integer(string='Invoice Count',compute='_compute_invoice_count')
+    payment_ids = fields.One2many('hotel.payments', 'accommodation_id', string='Payments')
+    date_today = fields.Datetime.today()
 
     @api.depends('expected_days','check_in_date')
     def _compute_expected_date(self):
@@ -69,6 +71,15 @@ class HotelAccommodation(models.Model):
             self.check_in_date = datetime.now()
             self.room_id.state = 'not_available'
 
+            self.env['hotel.payments'].create({
+                'description': "Room Rent",
+                'uom': "Units",
+                'quantity': 1,
+                'unit_price': self.room_id.rent,
+                'subtotal': 1*self.room_id.rent,
+                'accommodation_id': self.id,
+            })
+
     def check_out_action(self):
         """Performing check-out button action & invoice generation,computed  total days, generating invoice
         guest id, room id, rent from room id, total days are used.
@@ -81,6 +92,11 @@ class HotelAccommodation(models.Model):
         else:
             total_days=(self.check_out_date.date()-self.check_in_date.date()).days
 
+        payments = self.env['hotel.payments'].search([('accommodation_id', '=', self.id)])
+        payments.write({
+            'quantity': total_days,
+            'subtotal': total_days * self.room_id.rent,
+        })
 
         invoice= self.env['account.move'].create({
                 'move_type':'out_invoice',
@@ -112,6 +128,8 @@ class HotelAccommodation(models.Model):
         state is used.
         Change the state into draft."""
         self.state = 'draft'
+        payments = self.env['hotel.payments'].search([('accommodation_id', '=', self.id)])
+        payments.unlink()
 
     def action_view_invoice(self):
         """Action for Invoice stat button.
@@ -124,3 +142,31 @@ class HotelAccommodation(models.Model):
             'res_id': self.invoice_id.id,
             'target': 'current',
         }
+
+    @api.depends('invoice_id')
+    def _compute_invoice_count(self):
+        """Compute total invoice count
+        invoice_id,invoice count is used"""
+        self.invoice_count=len(self.invoice_id)
+
+    def action_view_food_orders(self):
+        """Action for Orders stat button"""
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Food Orders',
+            'res_model': 'hotel.food.order.lines',
+            'view_mode': 'list',
+            'target': 'current',
+            'domain': [('order_room_id', 'in', self.room_id.id)],
+        }
+
+    # @api.onchange('check_in_date')
+    # def _compute_rent_today(self):
+    #     total_days = (self.date_today - self.check_in_date).days
+    #     print(self.id)
+    #     payments = self.env['hotel.payments'].search([('accommodation_id', '=', self.id)])
+    #     print(payments)
+    #     payments.write({
+    #         'quantity': total_days,
+    #         'subtotal': total_days * self.room_id.rent,
+    #     })

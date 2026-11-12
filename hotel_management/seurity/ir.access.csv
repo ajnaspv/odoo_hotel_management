@@ -8,3 +8,5 @@ access_hotel_accommodation_model,access_hotel_accommodation_model,hotel.accommod
 access_hotel_guests_model,access_hotel_guests_model,hotel.guests,base.group_user,crud,
 access_hotel_food_orders_model,access_hotel_food_orders_model,hotel.food.orders,base.group_user,crud,
 access_hotel_food_order_lines_model,access_hotel_food_order_lines_model,hotel.food.order.lines,base.group_user,crud,
+access_hotel_food_order_quantity_wizard_model,access_hotel_food_order_quantity_wizard_model,hotel.food.order.quantity.wizard,base.group_user,crud,
+access_hotel_payments,access_hotel_payments,hotel.payments,base.group_user,crud,

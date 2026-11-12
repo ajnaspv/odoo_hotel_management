@@ -1,1 +1,2 @@
-from . import hotel_rooms,hotel_facilities,hotel_rooms_facilities,hotel_foods,hotel_foods_category,hotel_accommodation,hotel_guests,hotel_food_orders,hotel_food_order_lines
+from . import (hotel_rooms,hotel_facilities,hotel_rooms_facilities,hotel_foods,hotel_foods_category,hotel_accommodation,
+               hotel_guests,hotel_food_orders,hotel_food_order_lines,hotel_payments)

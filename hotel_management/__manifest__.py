@@ -19,6 +19,9 @@
         'data/demo_hotel_rooms_facilities.xml',
         'data/demo_hotel_food_categories.xml',
         'views/hotel_food_orders_views.xml',
+        'wizard/hotel_food_order_quantity_wizard_views.xml',
+        'views/hotel_food_order_lines_views.xml',
+        'views/hotel_payments.xml',
 
 
         'views/hotel_menus.xml',
