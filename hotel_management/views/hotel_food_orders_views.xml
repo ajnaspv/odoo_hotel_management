@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="hotel_food_orders_action" model="ir.actions.act_window">
+        <field name="name">Order Food</field>
+        <field name="res_model">hotel.food.orders</field>
+        <field name="view_mode">list,form,kanban</field>
+    </record>
+
+    <!--List view-->
+
+    <record id="hotel_foods__orders_list_view" model="ir.ui.view">
+        <field name="name">List View</field>
+        <field name="model">hotel.food.orders</field>
+        <field name="arch" type="xml">
+            <list string="Foods">
+                <field name="rm_id"/>
+                <field name="accommodation_id"/>
+                <field name="guest_name"/>
+                <field name="order_date"/>
+            </list>
+        </field>
+    </record>
+
+    <!--    Form View-->
+    <record id="hotel_foods__orders_form_view" model="ir.ui.view">
+        <field name="name">Form View</field>
+        <field name="model">hotel.food.orders</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="food_order_confirm_action" type="object" invisible="not order_line_ids or status=='confirmed'"
+                            string="Confirm Order"
+                            class="btn-primary"/>
+
+                    <button name="food_order_cancel_action" type="object" invisible="status != 'confirmed'"
+                            string="Cancel Order"
+                            class="btn-secondary"/>
+                </header>
+                <sheet>
+
+                    <h1>
+                        <field name="food_order_reference" placeholder="Food Order reference"/>
+                    </h1>
+                    <group>
+                        <group>
+
+                            <field name="accommodation_id"/>
+                            <field name="rm_id"/>
+                            <field name="guest_name"/>
+                            <field name="order_date"/>
+                            <field name="rm_id" invisible="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Menu" invisible="status == 'confirmed'">
+                            <group>
+                                <field name="category_ids" widget="many2many_tags"
+                                       placeholder="Select food categoriesss"/>
+                            </group>
+                            <field name="food_ids" mode="kanban" options="{'no_create_edit': True, 'no_open': True}"
+                                   context="{'default_order_id': id, 'order_room_id':rm_id, 'food_order_reference' : food_order_reference}">
+                                <kanban action="action_hotel_food_order_quantity_wizard" type="object">
+                                    <templates>
+                                        <t t-name="card" class="row">
+                                            <field name="category_id"/>
+                                            <field name="image" widget="image" options="{'size': [60, 60]}"/>
+                                            <field name="name" class="fw-bolder"/>
+                                            <field name="price" class="text-muted"/>
+                                        </t>
+                                    </templates>
+                                </kanban>
+                            </field>
+                        </page>
+                        <page string="Order Lines" invisible="not order_line_ids">
+                            <field name="order_line_ids" readonly="1">
+                                <list>
+                                    <field name="order_room_id"/>
+                                    <field name="food_order_reference"/>
+                                    <field name="food_item_id"/>
+                                    <field name="food_qty"/>
+                                    <field name="price"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

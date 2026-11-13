@@ -12,7 +12,7 @@
         <field name="name">List View</field>
         <field name="model">hotel.accommodation</field>
         <field name="arch" type="xml">
-            <list string="Accommodation">
+            <list string="Accommodation" decoration-info="1 == 1">
                 <field name="guest_id"/>
                 <field name="check_in_date"/>
                 <field name="check_out_date"/>
@@ -37,15 +37,21 @@
                     <button name="cancel_btn_action" type="object" string="Cancel"/>
                     <field name="state" widget="statusbar"/>
                 </header>
-                <sheet>
-                    <div class="oe_button_box" name="button_box" invisible="state != 'check_out'">
-                    <button name="action_view_invoice" type="object" class="oe_stat_button"
-                            icon="edit_square">
-<!--                        <field string="Invoice" name="invoice_count" widget="statinfo"/>-->
-                        <span>Invoice</span>
-                    </button>
 
-                </div>
+                <sheet>
+                    <widget name="web_ribbon" title="Paid" invisible="not invoice_id.payment_status=='paid'"/>
+                    <div class="oe_button_box" name="button_box" >
+                        <button name="action_view_invoice" type="object" class="oe_stat_button"
+                                icon="edit_square" invisible="state != 'check_out'">
+                            <field string="Invoice" name="invoice_count" widget="statinfo"/>
+                        </button>
+                        <button name="action_view_food_orders" type="object" class="oe_stat_button"
+                                icon="edit_square">
+                            <span>Orders</span>
+<!--                            <field string="Orders" name="order_count" widget="statinfo"/>-->
+                        </button>
+                    </div>
+
                     <h1>
                         <field name="booking_reference" placeholder="Booking reference"/>
                     </h1>
@@ -60,16 +66,20 @@
                         <group>
                             <field name="number_of_guests"/>
                             <!--                            <field name="additional_guest_ids" invisible="number_of_guests &lt;= 1" widget="many2many_tags"/>-->
-                            <field name="check_in_date" readonly="1"/>
+                            <field name="check_in_date"/>
                             <field name="check_out_date"/>
                             <field name="expected_days" invisible="state not in ['draft','check_in']"/>
                             <field name="expected_date" invisible="state not in ['draft','check_in']"/>
 
                         </group>
                     </group>
+
                     <notebook>
                         <page string="Guest Information" invisible="number_of_guests &lt;= 1">
                             <field name="additional_guest_ids"/>
+                        </page>
+                        <page string="Payments" invisible="not payment_ids">
+                            <field name="payment_ids" readonly="1"/>
                         </page>
                     </notebook>
                 </sheet>

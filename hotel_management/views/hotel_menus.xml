@@ -5,6 +5,7 @@
         <!--        Reception Menu-->
         <menuitem id="reception_menu" name="Reception" sequence="1">
             <menuitem id="hotel_accommodation_model" action="hotel_accommodation_action" name="Accommodation"/>
+            <menuitem id="hotel_food_orders_model" action="hotel_food_orders_action" name="Order Food"/>
         </menuitem>
 
         <!--        Configuration Menu-->
