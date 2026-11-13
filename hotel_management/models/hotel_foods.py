@@ -25,7 +25,6 @@ class HotelFoods(models.Model):
     #     })
 
     def action_hotel_food_order_quantity_wizard(self):
-        print(self.env.context.get('order_room_id'))
         return {
             'type': 'ir.actions.act_window',
             'name': 'Quantity Entry',

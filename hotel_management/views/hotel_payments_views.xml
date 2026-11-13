@@ -6,6 +6,7 @@
         <field name="arch" type="xml">
             <list string="Food Orders">
                 <field name="description"/>
+                <field name="order_reference"/>
                 <field name="uom"/>
                 <field name="quantity"/>
                 <field name="unit_price"/>

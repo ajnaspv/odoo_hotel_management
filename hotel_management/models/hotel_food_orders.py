@@ -5,10 +5,10 @@ from openpyxl.worksheet import related
 class HotelFoodOreders(models.Model):
     _name = 'hotel.food.orders'
     _description = 'Hotel Food Orders'
-    _rec_name = 'room_id'
+    _rec_name = 'accommodation_id'
 
-    room_id = fields.Many2one('hotel.accommodation', readonly=False, domain="[('state', '=', 'check_in')]",required=True)
-    rm_id = fields.Many2one('hotel.rooms', readonly=True, related='room_id.room_id')
+    accommodation_id = fields.Many2one('hotel.accommodation', readonly=False, domain="[('state', '=', 'check_in')]",required=True, string="Booking Id")
+    rm_id = fields.Many2one('hotel.rooms', readonly=True, related='accommodation_id.room_id', string="Room Number")
     guest_name = fields.Char(string='Guest Name')
     order_date = fields.Datetime(string='Order Date',default=fields.Datetime.now, readonly=True)
     category_ids = fields.Many2many('hotel.foods.category', string='Categories')
@@ -16,14 +16,15 @@ class HotelFoodOreders(models.Model):
     order_line_ids = fields.One2many('hotel.food.order.lines','order_id', string='Order Lines')
     food_order_reference = fields.Char(string='Order Reference', readonly=True, default=lambda self: _('New'), copy=False)
     status = fields.Selection([('cancelled', 'Cancelled'),
-                               ('confirmed','Confirmed'),],default='confirmed',string='Status')
+                               ('confirmed','Confirmed'),],default='cancelled',string='Status')
 
-    @api.onchange('room_id')
-    def _onchange_room_id(self):
+    @api.onchange('accommodation_id')
+    def _onchange_accommodation_id(self):
         """ On change room id select guest name
-        guest_id, room_id is used
+        guest_id, accommodation_id is used
         return guest name"""
-        self.guest_name = self.room_id.guest_id.name
+        self.guest_name = self.accommodation_id.guest_id.name
+        self.rm_id = self.accommodation_id.room_id
 
     @api.onchange('category_ids')
     def _onchange_category_ids(self):
@@ -44,19 +45,19 @@ class HotelFoodOreders(models.Model):
         price = sum(self.order_line_ids.mapped('subtotal'))
 
         self.env['hotel.payments'].create({
-            'description': self.food_order_reference,
+            'description': "Food Order",
+            'order_reference': self.food_order_reference,
             'uom': "Units",
             'quantity': 1,
             'unit_price': price,
             'subtotal': price,
-            'accommodation_id': self.room_id.id,
+            'accommodation_id': self.accommodation_id.id,
         })
         self.status = 'confirmed'
-        print(self.status)
 
     def food_order_cancel_action(self):
         self.status = 'cancelled'
-        payments = self.env['hotel.payments'].search([('description', 'in', self.food_order_reference)])
+        payments = self.env['hotel.payments'].search([('order_reference', 'in', self.food_order_reference)])
         payments.unlink()
 
         food_orders = self.env['hotel.food.order.lines'].search([('food_order_reference', 'in', self.food_order_reference)])

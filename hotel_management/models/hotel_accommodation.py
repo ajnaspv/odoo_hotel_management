@@ -9,13 +9,13 @@ class HotelAccommodation(models.Model):
     _name = 'hotel.accommodation'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _description = 'Hotel Accommodation'
-    _rec_name = 'room_id'
+    _rec_name = 'booking_reference'
 
     guest_id = fields.Many2one('res.partner',string='Guest Name', required=True)
     number_of_guests = fields.Integer(string='Number of Guests', default=1)
     additional_guest_ids = fields.One2many('hotel.guests','additional_guests_id',string='Additional Guests')
-    check_in_date = fields.Datetime(string='Check In Date', tracking=True)
-    check_out_date = fields.Datetime(string='Check Out Date', tracking=True)
+    check_in_date = fields.Datetime(string='Check In Date', tracking=True, readonly=True)
+    check_out_date = fields.Datetime(string='Check Out Date', tracking=True, readonly=True)
     invoice_id = fields.Many2one('account.move', string='Invoice', readonly=True)
     bed_type = fields.Selection([
         ('single', 'Single'),
@@ -32,10 +32,11 @@ class HotelAccommodation(models.Model):
     ],default='draft', tracking=True)
     id_proof = fields.Binary(string='Address Proof')
     expected_days = fields.Integer(string='Expected Days')
-    expected_date = fields.Datetime(string='Expected Date', compute='_compute_expected_date')
+    expected_date = fields.Date(string='Expected Date', compute='_compute_expected_date')
     booking_reference = fields.Char(string='Boooking Reference', readonly=True, default=lambda self: _('New'), copy=False)
     invoice_count = fields.Integer(string='Invoice Count',compute='_compute_invoice_count')
     payment_ids = fields.One2many('hotel.payments', 'accommodation_id', string='Payments')
+    inv_line_ids = []
     date_today = fields.Datetime.today()
 
     @api.depends('expected_days','check_in_date')
@@ -43,11 +44,12 @@ class HotelAccommodation(models.Model):
         """Compute expected checkout date.
         Check in date, checkout date, expected days are used.
         Returns an expected checkout date"""
+        print(self.date_today)
 
         if not self.check_in_date:
-            self.expected_date=datetime.now()+timedelta(days=self.expected_days)
+            self.expected_date=(datetime.now()+timedelta(days=self.expected_days)).date()
         else:
-            self.expected_date = self.check_in_date + timedelta(days=self.expected_days)
+            self.expected_date = (self.check_in_date + timedelta(days=self.expected_days)).date()
 
     @api.model_create_multi
     def create(self, vals):
@@ -73,6 +75,7 @@ class HotelAccommodation(models.Model):
 
             self.env['hotel.payments'].create({
                 'description': "Room Rent",
+                'order_reference' : self.booking_reference,
                 'uom': "Units",
                 'quantity': 1,
                 'unit_price': self.room_id.rent,
@@ -92,21 +95,25 @@ class HotelAccommodation(models.Model):
         else:
             total_days=(self.check_out_date.date()-self.check_in_date.date()).days
 
-        payments = self.env['hotel.payments'].search([('accommodation_id', '=', self.id)])
+        payments = self.env['hotel.payments'].search([('order_reference', '=', self.booking_reference)])
         payments.write({
             'quantity': total_days,
             'subtotal': total_days * self.room_id.rent,
         })
 
+        invoice_lines = []
+        for payment in self.payment_ids:
+            invoice_lines.append({
+                'name': payment.description,
+                'price_unit': payment.unit_price,
+                'quantity': payment.quantity,
+            })
+
         invoice= self.env['account.move'].create({
                 'move_type':'out_invoice',
                 'partner_id': self.guest_id.id,
                 'invoice_date': datetime.today(),
-                'invoice_line_ids': [Command.create({
-                    'name': "Room "+self.room_id.room_number,
-                    'price_unit': self.room_id.rent,
-                    'quantity': total_days,
-                })]
+                'invoice_line_ids': [Command.create(vals) for vals in invoice_lines]
             })
         self.invoice_id=invoice.id
         return {
@@ -122,6 +129,7 @@ class HotelAccommodation(models.Model):
         state is used.
         Change the state into canceled"""
         self.state = 'cancelled'
+        self.room_id.state = 'available'
 
     def draft_btn_action(self):
         """Performing draft button action.
@@ -130,6 +138,7 @@ class HotelAccommodation(models.Model):
         self.state = 'draft'
         payments = self.env['hotel.payments'].search([('accommodation_id', '=', self.id)])
         payments.unlink()
+        self.room_id.state = 'available'
 
     def action_view_invoice(self):
         """Action for Invoice stat button.
@@ -159,14 +168,27 @@ class HotelAccommodation(models.Model):
             'target': 'current',
             'domain': [('order_room_id', 'in', self.room_id.id)],
         }
-
+    #
     # @api.onchange('check_in_date')
     # def _compute_rent_today(self):
-    #     total_days = (self.date_today - self.check_in_date).days
     #     print(self.id)
+    #     if self.check_in_date:
+    #         total_days = (self.date_today - self.check_in_date).days
+    #     else:
+    #         total_days = 1
     #     payments = self.env['hotel.payments'].search([('accommodation_id', '=', self.id)])
     #     print(payments)
     #     payments.write({
     #         'quantity': total_days,
     #         'subtotal': total_days * self.room_id.rent,
     #     })
+
+    def update_room_rent(self):
+        date_today = fields.Datetime.today()
+        if self.check_in_date:
+            total_days = (date_today - self.check_in_date).days
+            payments = self.env['hotel.payments'].search([('order_reference', '=', self.booking_reference)])
+            payments.write({
+                'quantity': total_days,
+                'subtotal': total_days * self.room_id.rent,
+            })
