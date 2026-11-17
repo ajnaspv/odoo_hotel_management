@@ -4,6 +4,7 @@
         <field name="name">Hotel Accommodation</field>
         <field name="res_model">hotel.accommodation</field>
         <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_available': 'cancelled'}</field>
     </record>
 
     <!--List view-->
@@ -12,12 +13,13 @@
         <field name="name">List View</field>
         <field name="model">hotel.accommodation</field>
         <field name="arch" type="xml">
-            <list string="Accommodation">
+            <list string="Accommodation" decoration-warning="expected_date == context_today().strftime('%Y-%m-%d')" decoration-danger="state == 'check_in' and expected_date &lt; context_today().strftime('%Y-%m-%d')" default_order="check_in_date desc">
                 <field name="guest_id"/>
-                <field name="check_in_date"/>
-                <field name="check_out_date"/>
                 <field name="room_id"/>
                 <field name="state"/>
+                <field name="expected_date"/>
+                <field name="check_in_date"/>
+                <field name="check_out_date"/>
             </list>
         </field>
     </record>
@@ -37,15 +39,21 @@
                     <button name="cancel_btn_action" type="object" string="Cancel"/>
                     <field name="state" widget="statusbar"/>
                 </header>
-                <sheet>
-                    <div class="oe_button_box" name="button_box" invisible="state != 'check_out'">
-                    <button name="action_view_invoice" type="object" class="oe_stat_button"
-                            icon="edit_square">
-<!--                        <field string="Invoice" name="invoice_count" widget="statinfo"/>-->
-                        <span>Invoice</span>
-                    </button>
 
-                </div>
+                <sheet>
+                    <widget name="web_ribbon" title="Paid" invisible="invoice_payment_status=='not_paid'"/>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_invoice" type="object" class="oe_stat_button"
+                                icon="edit_square" invisible="state != 'check_out'">
+                            <field string="Invoice" name="invoice_count" widget="statinfo"/>
+                        </button>
+                        <button name="action_view_food_orders" type="object" class="oe_stat_button"
+                                icon="edit_square">
+                            <span>Orders</span>
+                            <!--                            <field string="Orders" name="order_count" widget="statinfo"/>-->
+                        </button>
+                    </div>
+
                     <h1>
                         <field name="booking_reference" placeholder="Booking reference"/>
                     </h1>
@@ -60,21 +68,50 @@
                         <group>
                             <field name="number_of_guests"/>
                             <!--                            <field name="additional_guest_ids" invisible="number_of_guests &lt;= 1" widget="many2many_tags"/>-->
-                            <field name="check_in_date" readonly="1"/>
+                            <field name="check_in_date"/>
                             <field name="check_out_date"/>
                             <field name="expected_days" invisible="state not in ['draft','check_in']"/>
                             <field name="expected_date" invisible="state not in ['draft','check_in']"/>
 
                         </group>
                     </group>
+
                     <notebook>
                         <page string="Guest Information" invisible="number_of_guests &lt;= 1">
                             <field name="additional_guest_ids"/>
+                        </page>
+                        <page string="Payments" invisible="not payment_ids">
+                            <field name="payment_ids" readonly="1"/>
                         </page>
                     </notebook>
                 </sheet>
                 <chatter/>
             </form>
+        </field>
+    </record>
+    <!--    Search View-->
+    <record id="hotel_accommodation_search_view" model="ir.ui.view">
+        <field name="name">List View</field>
+        <field name="model">hotel.accommodation</field>
+        <field name="arch" type="xml">
+            <search string="Accommodation Search">
+                <field name="room_id"/>
+                <field name="guest_id"/>
+                <field name="booking_reference"/>
+                <separator/>
+                <filter string="Bookings" name="available" domain="[('state', '!=', 'cancelled')]"/>
+                <filter string="Check Out Today" name="check_out_date_today" domain="[('check_out_date_only', '=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter string="Check In Today" name="check_in_date_today" domain="[('check_in_date_only', '=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter string="Expected Checkout Tomorrow" name="expected_date_tomorrow" domain="[('expected_date', '=', 'today +1d')]"/>
+                <group>
+                    <filter string="Room" name="room_id"
+                            context="{'group_by':'room_id'}"/>
+                    <filter string="Bed Type" name="bed_type"
+                            context="{'group_by':'bed_type'}"/>
+                    <filter string="State" name="state"
+                            context="{'group_by':'state'}"/>
+                </group>
+            </search>
         </field>
     </record>
 </odoo>

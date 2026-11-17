@@ -10,5 +10,15 @@
            <field name="number_increment">1</field>
            <field name="company_id" eval="False"/>
        </record>
+
+       <record id="ir_sequence_food_orders" model="ir.sequence">
+           <field name="name">Food Order reference Number</field>
+           <field name="code">hotel.food.orders</field>
+           <field name="prefix">HM/FOOD/</field>
+           <field name="padding">4</field>
+           <field name="number_next">1</field>
+           <field name="number_increment">1</field>
+           <field name="company_id" eval="False"/>
+       </record>
    </data>
 </odoo>

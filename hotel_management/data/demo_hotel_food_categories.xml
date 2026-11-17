@@ -1,9 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo noupdate="1">
     <record id="demo_hotel_foods_category_1" model="hotel.foods.category">
-        <field name="name">Veg</field>
+        <field name="name">Breakfast</field>
     </record>
     <record id="demo_hotel_foods_category_2" model="hotel.foods.category">
-        <field name="name">Non Veg</field>
+        <field name="name">Lunch</field>
+    </record>
+    <record id="demo_hotel_foods_category_3" model="hotel.foods.category">
+        <field name="name">Dinner</field>
+    </record>
+    <record id="demo_hotel_foods_category_4" model="hotel.foods.category">
+        <field name="name">Dessert</field>
+    </record>
+    <record id="demo_hotel_foods_category_5" model="hotel.foods.category">
+        <field name="name">Hot Drinks</field>
+    </record>
+    <record id="demo_hotel_foods_category_6" model="hotel.foods.category">
+        <field name="name">Cold Drinks</field>
     </record>
 </odoo>

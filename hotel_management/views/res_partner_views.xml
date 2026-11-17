@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <record id="hotel_res_partner_action" model="ir.actions.act_window">
+        <field name="name">Hotel Guests List</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('is_hotel_guest', '=', True)]</field>
+    </record>
+
+    <data>
+        <record id="res_partner_list_view" model="ir.ui.view">
+            <field name="name">Hotel Guests List View</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='website']" position="after">
+                    <field name="is_hotel_guest"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
