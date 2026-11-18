@@ -215,9 +215,6 @@ class HotelAccommodation(models.Model):
             if rec.expected_date==date_today:
                 mail_template = rec.env.ref('hotel_management.email_template_checkout_reminder')
                 mail_template.send_mail(rec.id, force_send=True)
-                print("today",date_today)
-                print("expected",rec.expected_date)
-                print("sended")
 
     @api.depends('invoice_id','invoice_id.payment_state')
     def _compute_invoice_payment_status(self):
