@@ -12,7 +12,7 @@ class HotelAccommodation(models.Model):
     _rec_name = 'booking_reference'
 
     today = fields.Date.today()
-
+    active = fields.Boolean(string="Is Active", default=True, readonly=True)
     guest_id = fields.Many2one('res.partner',string='Guest Name', required=True)
     number_of_guests = fields.Integer(string='Number of Guests', default=1)
     additional_guest_ids = fields.One2many('hotel.guests','additional_guests_id',string='Additional Guests')
@@ -20,6 +20,7 @@ class HotelAccommodation(models.Model):
     check_in_date_only = fields.Date('Check In Date Only', readonly=True, compute='_compute_check_in_date_only', store=True)
     check_out_date = fields.Datetime(string='Check Out Date', tracking=True, readonly=True)
     check_out_date_only = fields.Date('Check Out Date Only', readonly=True, compute='_compute_check_out_date_only', store=True)
+    cancelled_date = fields.Date(string='Cancelled Date', readonly=True)
     invoice_id = fields.Many2one('account.move', string='Invoice', readonly=True)
     bed_type = fields.Selection([
         ('single', 'Single'),
@@ -81,6 +82,7 @@ class HotelAccommodation(models.Model):
             self.state = 'check_in'
             self.check_in_date = datetime.now()
             self.room_id.state = 'not_available'
+            self.guest_id.is_hotel_guest = True
 
             self.env['hotel.payments'].create({
                 'description': "Room Rent",
@@ -137,7 +139,9 @@ class HotelAccommodation(models.Model):
         """Performing cancel button action.
         state is used.
         Change the state into canceled"""
+        today = fields.Date.today()
         self.state = 'cancelled'
+        self.cancelled_date = today
         self.room_id.state = 'available'
         payments = self.env['hotel.payments'].search([('accommodation_id', '=', self.id)])
         payments.unlink()
@@ -201,6 +205,20 @@ class HotelAccommodation(models.Model):
                     'subtotal': total_days * rec.room_id.rent,
                 })
 
+    def check_out_reminder(self):
+        """Check out email reminder
+        All Check-in records are used
+        return the reminder"""
+        date_today = fields.Datetime.today().date()
+        bookings = self.env['hotel.accommodation'].search([('state', '=', 'check_in')])
+        for rec in bookings:
+            if rec.expected_date==date_today:
+                mail_template = rec.env.ref('hotel_management.email_template_checkout_reminder')
+                mail_template.send_mail(rec.id, force_send=True)
+                print("today",date_today)
+                print("expected",rec.expected_date)
+                print("sended")
+
     @api.depends('invoice_id','invoice_id.payment_state')
     def _compute_invoice_payment_status(self):
         """Computing invoice paid status
@@ -230,3 +248,11 @@ class HotelAccommodation(models.Model):
         for rec in self:
             if rec.check_out_date:
                 rec.check_out_date_only = rec.check_out_date.date()
+
+
+    def cancelled_bookings_archive(self):
+        date_today = fields.Datetime.today().date()
+        bookings = self.env['hotel.accommodation'].search([('state', '=', 'cancelled')])
+        for rec in bookings:
+            if (rec.cancelled_date + timedelta(days=2)) == date_today:
+                rec.active = False

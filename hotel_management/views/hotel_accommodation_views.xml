@@ -13,7 +13,7 @@
         <field name="name">List View</field>
         <field name="model">hotel.accommodation</field>
         <field name="arch" type="xml">
-            <list string="Accommodation" decoration-warning="expected_date == context_today().strftime('%Y-%m-%d')" decoration-danger="state == 'check_in' and expected_date &lt; context_today().strftime('%Y-%m-%d')" default_order="check_in_date desc">
+            <list string="Accommodation" decoration-warning="state == 'check_in' and expected_date == context_today().strftime('%Y-%m-%d')" decoration-danger="state == 'check_in' and expected_date &lt; context_today().strftime('%Y-%m-%d')" default_order="check_in_date desc">
                 <field name="guest_id"/>
                 <field name="room_id"/>
                 <field name="state"/>

@@ -1,6 +1,6 @@
 {
     'name': "Hotel management",
-    'depends': ['base','mail','account'],
+    'depends': ['base','mail','account','base_automation'],
     'application': True,
     'version': '20.0.1.0.0',
     'author': "Ajnas P V",
@@ -24,6 +24,8 @@
         'views/hotel_payments_views.xml',
         'data/ir_cron_data.xml',
         'views/res_partner_views.xml',
+        'data/mail_template.xml',
+        # 'data/ir_actions_data.xml',
 
         'views/hotel_menus.xml',
     ]

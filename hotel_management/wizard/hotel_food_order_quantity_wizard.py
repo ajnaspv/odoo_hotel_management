@@ -6,9 +6,14 @@ class HotelFoodOrderQuantityWizard(models.TransientModel):
     food_item_name = fields.Char(string="Food Name", readonly=True)
 
     order_qty = fields.Integer(string='Quantity')
+    food_item_id = fields.Many2one(
+        'hotel.foods',
+        default=lambda self: self.env.context.get('food_item_id')
+    )
+    food_image = fields.Image(related='food_item_id.image', readonly=True)
 
     def action_qty_entry(self):
-        print("yfg", self.env.context.get('order_room_id'))
+
         self.env['hotel.food.order.lines'].create({
             'food_item_id': self.env.context.get('food_item_id'),
             'food_qty': self.order_qty,
