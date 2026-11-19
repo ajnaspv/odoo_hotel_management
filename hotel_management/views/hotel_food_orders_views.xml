@@ -34,7 +34,7 @@
 
                     <button name="food_order_cancel_action" type="object" invisible="status != 'confirmed'"
                             string="Cancel Order"
-                            class="btn-secondary"/>
+                            class="btn-secondary" groups="hotel_management.group_hotel_management_manager"/>
                 </header>
                 <sheet>
 

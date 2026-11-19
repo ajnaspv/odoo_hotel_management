@@ -6,6 +6,11 @@ class HotelRooms(models.Model):
     _description = "Hotel Room"
     _rec_name = "room_number"
 
+    company_id = fields.Many2one(
+        comodel_name='res.company',
+        string='Company',
+        default=lambda self: self.env.company,
+    )
     room_number = fields.Char(string="Room Number")
     bed_type = fields.Selection([
         ('single', 'Single'),

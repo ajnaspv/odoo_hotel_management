@@ -1,11 +1,13 @@
 {
     'name': "Hotel management",
-    'depends': ['base','mail','account','base_automation'],
+    'depends': ['base', 'mail', 'account', 'base_automation'],
     'application': True,
     'version': '20.0.1.0.0',
     'author': "Ajnas P V",
     'license': 'LGPL-3',
     'data': [
+        'security/user_groups.xml',
+
         'security/ir.access.csv',
         'views/hotel_rooms_views.xml',
         'views/hotel_facilities_views.xml',
@@ -25,7 +27,7 @@
         'data/ir_cron_data.xml',
         'views/res_partner_views.xml',
         'data/mail_template.xml',
-        # 'data/ir_actions_data.xml',
+        'data/ir_actions_data.xml',
 
         'views/hotel_menus.xml',
     ]

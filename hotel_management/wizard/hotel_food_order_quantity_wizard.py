@@ -5,6 +5,11 @@ class HotelFoodOrderQuantityWizard(models.TransientModel):
     _description = "Hotel Food Order Quantity Wizard"
     food_item_name = fields.Char(string="Food Name", readonly=True)
 
+    company_id = fields.Many2one(
+        comodel_name='res.company',
+        string='Company',
+        default=lambda self: self.env.company,
+    )
     order_qty = fields.Integer(string='Quantity')
     food_item_id = fields.Many2one(
         'hotel.foods',

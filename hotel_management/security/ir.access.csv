@@ -1,12 +1,23 @@
 id,name,model_id,group_id/id,operation,domain
-access_hotel_rooms_model,access_hotel_rooms_model,hotel.rooms,base.group_user,crud,
-access_hotel_facilities_model,access_hotel_facilities_model,hotel.facilities,base.group_user,crud,
-access_hotel_rooms_facilities_model,access_hotel_rooms_facilities_model,hotel.rooms.facilities,base.group_user,crud,
-access_hotel_foods_model,access_hotel_foods_model,hotel.foods,base.group_user,crud,
-access_hotel_foods_category_model,access_hotel_foods_category_model,hotel.foods.category,base.group_user,crud,
-access_hotel_accommodation_model,access_hotel_accommodation_model,hotel.accommodation,base.group_user,crud,
-access_hotel_guests_model,access_hotel_guests_model,hotel.guests,base.group_user,crud,
-access_hotel_food_orders_model,access_hotel_food_orders_model,hotel.food.orders,base.group_user,crud,
-access_hotel_food_order_lines_model,access_hotel_food_order_lines_model,hotel.food.order.lines,base.group_user,crud,
-access_hotel_food_order_quantity_wizard_model,access_hotel_food_order_quantity_wizard_model,hotel.food.order.quantity.wizard,base.group_user,crud,
-access_hotel_payments,access_hotel_payments,hotel.payments,base.group_user,crud,
+access_hotel_rooms_model_manager,access_hotel_rooms_model_manager,hotel.rooms,group_hotel_management_manager,crud,"[('company_id', 'in', company_ids)]"
+access_hotel_rooms_model_receptionist,access_hotel_rooms_model_receptionist,hotel.rooms,group_hotel_management_receptionist,ru,"[('company_id', 'in', company_ids)]"
+access_hotel_facilities_model_manager,access_hotel_facilities_model_manager,hotel.facilities,group_hotel_management_manager,crud,"[('company_id', 'in', company_ids)]"
+access_hotel_facilities_model_receptionist,access_hotel_facilities_model_receptionist,hotel.facilities,group_hotel_management_receptionist,r,"[('company_id', 'in', company_ids)]"
+access_hotel_rooms_facilities_model_manager,access_hotel_rooms_facilities_model_manager,hotel.rooms.facilities,group_hotel_management_manager,crud,"[('company_id', 'in', company_ids)]"
+access_hotel_rooms_facilities_model_receptionist,access_hotel_rooms_facilities_model_receptionist,hotel.rooms.facilities,group_hotel_management_receptionist,r,"[('company_id', 'in', company_ids)]"
+access_hotel_foods_model_manager,access_hotel_foods_model_manager,hotel.foods,group_hotel_management_manager,crud,"[('company_id', 'in', company_ids)]"
+access_hotel_foods_model_receptionist,access_hotel_foods_model_receptionist,hotel.foods,group_hotel_management_receptionist,r,"[('company_id', 'in', company_ids)]"
+access_hotel_foods_category_model_manager,access_hotel_foods_category_model_manager,hotel.foods.category,group_hotel_management_manager,crud,"[('company_id', 'in', company_ids)]"
+access_hotel_foods_category_model_receptionist,access_hotel_foods_category_model_receptionist,hotel.foods.category,group_hotel_management_receptionist,r,"[('company_id', 'in', company_ids)]"
+access_hotel_accommodation_model_manager,access_hotel_accommodation_model_manager,hotel.accommodation,group_hotel_management_manager,crud,"[('company_id', 'in', company_ids)]"
+access_hotel_accommodation_model_receptionist,access_hotel_accommodation_model_receptionist,hotel.accommodation,group_hotel_management_receptionist,cru,"[('company_id', 'in', company_ids)]"
+access_hotel_guests_model_manager,access_hotel_guests_model_manager,hotel.guests,group_hotel_management_manager,crud,"[('company_id', 'in', company_ids)]"
+access_hotel_guests_model_receptionist,access_hotel_guests_model_receptionist,hotel.guests,group_hotel_management_receptionist,cru,"[('company_id', 'in', company_ids)]"
+access_hotel_food_orders_model_manager,access_hotel_food_orders_model_manager,hotel.food.orders,group_hotel_management_manager,crud,"[('company_id', 'in', company_ids)]"
+access_hotel_food_orders_model_receptionist,access_hotel_food_orders_model_receptionist,hotel.food.orders,group_hotel_management_receptionist,cru,"[('company_id', 'in', company_ids)]"
+access_hotel_food_order_lines_model_manager,access_hotel_food_order_lines_model_manager,hotel.food.order.lines,group_hotel_management_manager,crud,"[('company_id', 'in', company_ids)]"
+access_hotel_food_order_lines_model_receptionist,access_hotel_food_order_lines_model_receptionist,hotel.food.order.lines,group_hotel_management_receptionist,cru,"[('company_id', 'in', company_ids)]"
+access_hotel_food_order_quantity_wizard_model_manager,access_hotel_food_order_quantity_wizard_model_manager,hotel.food.order.quantity.wizard,group_hotel_management_manager,crud,"[('company_id', 'in', company_ids)]"
+access_hotel_food_order_quantity_wizard_model_receptionist,access_hotel_food_order_quantity_wizard_model_receptionist,hotel.food.order.quantity.wizard,group_hotel_management_receptionist,cru,"[('company_id', 'in', company_ids)]"
+access_hotel_payments_manager,access_hotel_payments_manager,hotel.payments,group_hotel_management_manager,crud,"[('company_id', 'in', company_ids)]"
+access_hotel_payments_receptionist,access_hotel_payments_receptionist,hotel.payments,group_hotel_management_receptionist,cru,"[('company_id', 'in', company_ids)]"

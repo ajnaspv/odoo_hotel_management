@@ -5,6 +5,11 @@ class HotelFoods(models.Model):
     _name = 'hotel.foods'
     _description = 'Hotel Foods'
 
+    company_id = fields.Many2one(
+        comodel_name='res.company',
+        string='Company',
+        default=lambda self: self.env.company,
+    )
     name = fields.Char(string='Name', required=True)
     description = fields.Text(string='Description')
     image = fields.Image(string='Image')
@@ -33,12 +38,12 @@ class HotelFoods(models.Model):
             },
         }
 
-    # def create_food_product(self):
-    #     """Create Food As a Product in product.template
-    #     name, price, image are used
-    #     Return food product created in product.template"""
-    #     self.env['product.template'].create({
-    #         'name': self.name,
-    #         'image_1920': self.image,
-    #         'list_price': self.price,
-    #     })
+    def create_food_product(self):
+        """Create Food As a Product in product.template
+        name, price, image are used
+        Return food product created in product.template"""
+        self.env['product.template'].create({
+            'name': self.name,
+            'image_1920': self.image,
+            'list_price': self.price,
+        })

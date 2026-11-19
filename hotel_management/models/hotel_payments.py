@@ -4,6 +4,11 @@ class HotelPayments(models.Model):
     _name = 'hotel.payments'
     _description = 'Hotel Payments'
 
+    company_id = fields.Many2one(
+        comodel_name='res.company',
+        string='Company',
+        default=lambda self: self.env.company,
+    )
     description = fields.Char('Description')
     quantity = fields.Integer('Quantity')
     uom= fields.Char('UoM')

@@ -11,7 +11,7 @@
         <field name="room_number">102</field>
         <field name="bed_type">single</field>
         <field name="rent">500</field>
-        <field name="state">not_available</field>
+        <field name="state">available</field>
     </record>
 
     <record id="demo_room_3" model="hotel.rooms">

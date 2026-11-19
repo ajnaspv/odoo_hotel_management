@@ -11,6 +11,12 @@ class HotelAccommodation(models.Model):
     _description = 'Hotel Accommodation'
     _rec_name = 'booking_reference'
 
+    company_id = fields.Many2one(
+        comodel_name='res.company',
+        string='Company',
+        default=lambda self: self.env.company,
+    )
+
     today = fields.Date.today()
     active = fields.Boolean(string="Is Active", default=True, readonly=True)
     guest_id = fields.Many2one('res.partner',string='Guest Name', required=True)
@@ -38,7 +44,7 @@ class HotelAccommodation(models.Model):
     id_proof = fields.Binary(string='Address Proof')
     expected_days = fields.Integer(string='Expected Days')
     expected_date = fields.Date(string='Expected Date', compute='_compute_expected_date', store=True)
-    booking_reference = fields.Char(string='Boooking Reference', readonly=True, default=lambda self: _('New'), copy=False)
+    booking_reference = fields.Char(string='Boooking ID', readonly=True, default=lambda self: _('New'), copy=False)
     invoice_count = fields.Integer(string='Invoice Count',compute='_compute_invoice_count', store=True)
     payment_ids = fields.One2many('hotel.payments', 'accommodation_id', string='Payments', ondelete='cascade')
     inv_line_ids = []

@@ -6,6 +6,11 @@ class HotelGuests(models.Model):
     _description = 'Hotel Guests'
     _rec_name = 'partner_id'
 
+    company_id = fields.Many2one(
+        comodel_name='res.company',
+        string='Company',
+        default=lambda self: self.env.company,
+    )
     partner_id = fields.Many2one('res.partner',string="Guest Name")
     age = fields.Integer(string='Age')
     gender = fields.Selection([

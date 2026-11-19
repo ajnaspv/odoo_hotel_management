@@ -7,6 +7,11 @@ class HotelFoodOreders(models.Model):
     _description = 'Hotel Food Orders'
     _rec_name = 'accommodation_id'
 
+    company_id = fields.Many2one(
+        comodel_name='res.company',
+        string='Company',
+        default=lambda self: self.env.company,
+    )
     accommodation_id = fields.Many2one('hotel.accommodation', readonly=False, domain="[('state', '=', 'check_in')]",required=True, string="Booking Id", ondelete="cascade")
     rm_id = fields.Many2one('hotel.rooms', readonly=True, related='accommodation_id.room_id', string="Room Number")
     guest_name = fields.Char(string='Guest Name')

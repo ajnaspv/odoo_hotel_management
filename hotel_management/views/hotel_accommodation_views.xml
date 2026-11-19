@@ -14,6 +14,7 @@
         <field name="model">hotel.accommodation</field>
         <field name="arch" type="xml">
             <list string="Accommodation" decoration-warning="state == 'check_in' and expected_date == context_today().strftime('%Y-%m-%d')" decoration-danger="state == 'check_in' and expected_date &lt; context_today().strftime('%Y-%m-%d')" default_order="check_in_date desc">
+                <field name="booking_reference"/>
                 <field name="guest_id"/>
                 <field name="room_id"/>
                 <field name="state"/>
@@ -35,8 +36,8 @@
                             class="btn-primary"/>
                     <button name="check_out_action" type="object" invisible="state != 'check_in'" string="Check Out"
                             class="btn-primary"/>
-                    <button name="draft_btn_action" type="object" string="Reset to Draft"/>
-                    <button name="cancel_btn_action" type="object" string="Cancel"/>
+                    <button name="draft_btn_action" type="object" string="Reset to Draft" groups="hotel_management.group_hotel_management_manager"/>
+                    <button name="cancel_btn_action" type="object" string="Cancel" invisible="state != 'draft'"/>
                     <field name="state" widget="statusbar"/>
                 </header>
 
@@ -62,7 +63,7 @@
                             <field name="guest_id" context="{'show_address':1}"/>
                             <field name="bed_type"/>
                             <field name="facility_ids" options="{'no_create': True}" widget="many2many_tags"/>
-                            <field name="room_id" options="{'no_create': True}"/>
+                            <field name="room_id" options="{'no_create': True, 'no_create_edit': True}"/>
                             <field name="id_proof"/>
                         </group>
                         <group>

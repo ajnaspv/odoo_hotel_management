@@ -4,6 +4,11 @@ class HotelFoodOrderLines(models.Model):
     _name = 'hotel.food.order.lines'
     _description = 'Hotel Food Order Lines'
 
+    company_id = fields.Many2one(
+        comodel_name='res.company',
+        string='Company',
+        default=lambda self: self.env.company,
+    )
     food_item_id = fields.Many2one('hotel.foods')
     food_qty = fields.Integer('Food Qty')
     order_id = fields.Many2one('hotel.food.orders')
