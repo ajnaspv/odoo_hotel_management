@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
-   <data noupdate="1">
+   <data noupdate="0">
        <record id="daily_room_rent_update" model="ir.cron">
            <field name="name">Daily Room Rent Update</field>
            <field name="model_id" ref="model_hotel_accommodation"/>
@@ -13,9 +13,7 @@
                   eval="(DateTime.now() + timedelta(days=1)).strftime('%Y-%m-%d 12:00:00')"/>
            <field name="priority">1</field>
        </record>
-   </data>
 
-    <data noupdate="1">
        <record id="daily_check_out_reminder" model="ir.cron">
            <field name="name">Daily Checkout Reminder</field>
            <field name="model_id" ref="model_hotel_accommodation"/>
@@ -28,9 +26,7 @@
                   eval="(DateTime.now() + timedelta(days=1)).strftime('%Y-%m-%d 12:00:00')"/>
            <field name="priority">2</field>
        </record>
-   </data>
 
-    <data noupdate="1">
        <record id="cancelled_bookings_archive" model="ir.cron">
            <field name="name">Cancelled bookings archive</field>
            <field name="model_id" ref="model_hotel_accommodation"/>

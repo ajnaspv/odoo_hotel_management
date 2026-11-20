@@ -73,33 +73,37 @@ class HotelAccommodation(models.Model):
         booking reference number is generating"""
         for val in vals:
             if val.get('booking_reference', _('New')) == _('New'):
-                val['booking_reference'] = self.env['ir.sequence'].next_by_code('hotel.accommodation')
+                     val['booking_reference'] = self.env['ir.sequence'].next_by_code('hotel.accommodation')
         return super(HotelAccommodation, self).create(vals)
 
     def check_in_action(self):
         """Performing the checkout button action
         check in, checkout dates, id proof, additional guest ids are used.
         id proof, guest details validating"""
-        if not self.id_proof:
-            raise UserError("Id Proof is Not Attached. Please Attach.")
-        elif len(self.additional_guest_ids)!=self.number_of_guests-1:
-            raise UserError("Number of Guests or details is not correct. Please Provide details of all Guests.")
+        attachments = bookings = self.env['ir.attachment'].search([
+            ('res_model', '=', 'hotel.accommodation'),
+            ('res_id', '=', self.id)
+        ])
+        if self.id_proof or attachments:
+            if len(self.additional_guest_ids)!=self.number_of_guests-1:
+                raise UserError("Number of Guests or details is not correct. Please Provide details of all Guests.")
+            else:
+                self.state = 'check_in'
+                self.check_in_date = datetime.now()
+                self.room_id.state = 'not_available'
+                self.guest_id.is_hotel_guest = True
+
+                self.env['hotel.payments'].create({
+                    'description': "Room Rent",
+                    'order_reference' : self.booking_reference,
+                    'uom': "Units",
+                    'quantity': 1,
+                    'unit_price': self.room_id.rent,
+                    'subtotal': 1*self.room_id.rent,
+                    'accommodation_id': self.id,
+                })
         else:
-            self.state = 'check_in'
-            self.check_in_date = datetime.now()
-            self.room_id.state = 'not_available'
-            self.guest_id.is_hotel_guest = True
-
-            self.env['hotel.payments'].create({
-                'description': "Room Rent",
-                'order_reference' : self.booking_reference,
-                'uom': "Units",
-                'quantity': 1,
-                'unit_price': self.room_id.rent,
-                'subtotal': 1*self.room_id.rent,
-                'accommodation_id': self.id,
-            })
-
+            raise UserError("Please attach the ID Proof")
     def check_out_action(self):
         """Performing check-out button action & invoice generation,computed  total days, generating invoice
         guest id, room id, rent from room id, total days are used.
@@ -241,7 +245,6 @@ class HotelAccommodation(models.Model):
         for rec in self:
             if rec.check_in_date:
                 rec.check_in_date_only = rec.check_in_date.date()
-                print(rec.check_in_date_only)
 
     @api.depends('check_out_date')
     def _compute_check_out_date_only(self):
@@ -259,3 +262,4 @@ class HotelAccommodation(models.Model):
         for rec in bookings:
             if (rec.cancelled_date + timedelta(days=2)) == date_today:
                 rec.active = False
+
